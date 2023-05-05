@@ -88,13 +88,13 @@ d3.json("../data/points.geojson").then(function(data) {
 
 
       // Update the color of the clicked features
-      map.setPaintProperty('points', 'circle-color', [
-        'match',
-        ['get', 'attribute_id'],
-        clickedPointIDs,
-        'green',
-        'red',
-      ]);
+    map.setPaintProperty('points', 'circle-color', [
+      'case',
+      ['in', ['get', 'attribute_id'], ['literal', clickedPointIDs]],
+      'green',
+      'red'
+    ]);
+
 
       // Log the count of red points to the console
       console.log(numRedPoints);
