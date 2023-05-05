@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "attribute_id": 814647, "label_type": "NoCurbRamp", "street_edge_id": 389, "osm_street_id": 61313120, "neighborhood": "West Oradell", "severity": 3.0, "is_temporary": false, "agree_count": 2, "disagree_count": 0, "notsure_count": 0 }, "geometry": { "type": "Point", "coordinates": [ -74.045944213867188, 40.957992553710938 ] } },
+{ "type": "Feature", "properties": { "attribute_id": 814666, "label_type": "NoCurbRamp", "street_edge_id": 389, "osm_street_id": 61313120, "neighborhood": "West Oradell", "severity": 3.0, "is_temporary": false, "agree_count": 2, "disagree_count": 0, "notsure_count": 0 }, "geometry": { "type": "Point", "coordinates": [ -74.049171447753906, 40.958786010742188 ] } },
+{ "type": "Feature", "properties": { "attribute_id": 814641, "label_type": "NoCurbRamp", "street_edge_id": 389, "osm_street_id": 61313120, "neighborhood": "West Oradell", "severity": 5.0, "is_temporary": false, "agree_count": 3, "disagree_count": 1, "notsure_count": 0 }, "geometry": { "type": "Point", "coordinates": [ -74.045890808105469, 40.958091735839844 ] } },
+{ "type": "Feature", "properties": { "attribute_id": 814606, "label_type": "NoCurbRamp", "street_edge_id": 389, "osm_street_id": 61313120, "neighborhood": "West Oradell", "severity": 4.0, "is_temporary": false, "agree_count": 1, "disagree_count": 1, "notsure_count": 1 }, "geometry": { "type": "Point", "coordinates": [ -74.049095153808594, 40.958927154541016 ] } }
+]
+}
