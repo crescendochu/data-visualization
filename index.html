@@ -4,9 +4,16 @@
     <meta charset="utf-8" />
     <title>Mapbox and D3.js Example</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+   
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans&family=Encode+Sans+Condensed&display=swap" rel="stylesheet">
+
     <style>
       #map {
         position: absolute;
@@ -15,9 +22,72 @@
         width: 100%;
       }
     </style>
+  <!-- add style sheets from folder -->
+  <link rel="stylesheet" href="stylesheets/style.css">
+  
   </head>
   <body>
-    <div id="map"></div>
-    <script type="text/javascript" src='script/changing-colors.js'></script>
+<div>
+
+    <div id="map">
+      <div id="legend">
+        <h4>Legend</h4>
+        <div>
+          
+          <span class="legend-key missing-curb"></span>
+          Missing Curb Ramp
+        </div>
+        <div>
+          
+          <span class="legend-key fixed-curb"></span>
+          Fixed Curb Ramp
+        </div>
+        <div id="street-score-legend">
+          Street Score
+          <span class="legend-key color-scale"></span>
+          <div id="scale-labels">
+            <span class="scale-label" style="left: 0%">0</span>
+            <span class="scale-label" style="left: 25%">0.25</span>
+            <span class="scale-label" style="left: 50%">0.5</span>
+            <span class="scale-label" style="left: 75%">0.75</span>
+            <span class="scale-label" style="left: 100%">1.0</span>
+          </div>
+          
+        </div>
+        
+    </div>
+  </div>
+   
+    <div class="sidebar">
+      <h1>Fix Oradell Missing Curbs</h1>
+      <div class="container">
+        <p>Total missing curb ramps: <div id="missing-curb-count"> 907 </div> </p>
+        <p>You fixed: <div id="fixed-curb-count"> 0 </div></p>
+        <p>Sidewalk Access Score: <div id="access-score"> 0.5</div> </p>
+      </div>
+      <div class="container">
+        <h2>Instructions</h2>
+        <ul>
+          <li>Hover to check details of a missing curb</li>
+          <li>Click to fix the missing curb</li>
+          <li>Try to maximize <b>Sidewalk Access Score</b> by fixing 50 curb ramps</li>
+        </ul>
+
+      </div>
+      <div class="container">
+        <h2>Filters</h2>
+        <h3>Missing curb severity</h3>
+        <div id="severity-slider">
+        <div id="histogram"></div>
+      </div>
+        <h3>Street access score</h3>
+        <div id="histogram-street-score"></div>
+        <!-- Add filters for street access score -->
+      </div>
+     
+  
+    <script type="text/javascript" src='script/no-curb-ramps.js'></script>
+
+    
   </body>
 </html>
