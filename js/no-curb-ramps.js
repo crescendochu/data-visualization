@@ -12,6 +12,9 @@ var streets;
 
 var hoveredPointId = null;
 
+window.onload = function() {
+  location.reload(true);
+}
 
 
 function countFixedCurbs(data, clickedPointIDs) {
