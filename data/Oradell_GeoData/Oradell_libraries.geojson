@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "element_type": "node", "osmid": 367692580, "addr:state": "NJ", "amenity": "library", "ele": "14", "gnis:county_name": "Bergen", "gnis:feature_id": "2339207", "gnis:import_uuid": "57871b70-0100-4405-bb30-88b2e001a944", "gnis:reviewed": "no", "name": "Oradell Free Public Library", "source": "USGS Geonames", "wikidata": "Q69956795" }, "geometry": { "type": "Point", "coordinates": [ -74.0320831, 40.953649 ] } }
+]
+}
