@@ -1,53 +1,102 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-const LayerControl = ({ layer, toggleVisibility, handleDragStart, handleDragOver, handleDrop }) => {
-    const { id, color } = layer;
+const LayerControl = ({ layer, isVisible, toggleVisibility, index, moveLayer }) => {
+  // Remove the useState for isVisible
 
-    const [isVisible, setIsVisible] = useState(true);
-
-    const handleToggleVisibility = () => {
-        toggleVisibility(id);
-        setIsVisible(!isVisible);
-    };
-  
-    return (
-        <div id={id} className="draggable-layer" draggable="true" onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop}>
-            <div className="layer-name-container">
-                <div className="color-strip" style={{ backgroundColor: color || 'transparent' }} />
-                <span>{id}</span>
-            </div>
-            <div className="icon-container">
-                {isVisible ? <Eye onClick={handleToggleVisibility} /> : <EyeSlash onClick={handleToggleVisibility} />}
-            </div>
-        </div>
-    );
+  const handleToggleVisibility = () => {
+    toggleVisibility(layer.id);
   };
-  
 
-  const Sidebar = ({ layers, toggleVisibility, handleDragStart, handleDragOver, handleDrop }) => {
-    return (
-      <div id="menu" className="sidebar">
-        {layers.map((layer) => (
-          <LayerControl 
-            key={layer.id} 
-            layer={layer} 
-            toggleVisibility={toggleVisibility} 
-            handleDragStart={handleDragStart}
-            handleDragOver={handleDragOver}
-            handleDrop={handleDrop}
-          />
-        ))}
+  const [, drag] = useDrag(() => ({
+    type: 'layer',
+    item: { id: layer.id, index },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <div
+      id={layer.id}
+      className="draggable-layer"
+      ref = {drag}
+    >
+      <div className="layer-name-container">
+        <div
+          className="color-strip"
+          style={{ backgroundColor: layer.color || "transparent" }}
+        />
+        <span>{layer.id}</span>
       </div>
-    );
-  };
+      <div className="icon-container">
+        {isVisible ? (
+          <Eye weight="bold" onClick={handleToggleVisibility} />
+        ) : (
+          <EyeSlash weight="bold" onClick={handleToggleVisibility} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+  
+
+const Sidebar = ({ layers, toggleVisibility, moveLayer }) => {
+  const [, drop] = useDrop(() => ({
+    accept: 'layer',
+    hover(item, monitor) {
+      const dragIndex = item.index;
+      const hoverIndex = layers.findIndex(layer => layer.id === item.id);
+      
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      moveLayer(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  }));
+
+  return (
+    <div id="menu" className="sidebar" ref={drop}>
+      {layers.map((layer, index) => (
+        <LayerControl
+          key={layer.id}
+          layer={layer}
+          index={index}
+          isVisible={layer.visibility}
+          toggleVisibility={toggleVisibility}
+          moveLayer={moveLayer}
+        />
+      ))}
+    </div>
+  );
+};
+  
   
 
 const PointMap = () => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
   const [layers, setLayers] = useState([]);
+
+  const moveLayer = (fromIndex, toIndex) => {
+    setLayers(layers => {
+      const result = Array.from(layers);
+      const [removed] = result.splice(fromIndex, 1);
+      result.splice(toIndex, 0, removed);
+
+      if (map) {
+        map.moveLayer(removed.id, result[toIndex - 1]?.id);
+      }
+
+      return result;
+    });
+  }
 
   useEffect(() => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiY3Jlc2NlbmRvY2h1IiwiYSI6ImNpdGR5MWZ5aDAycjIyc3A5ZHoxZzRwMGsifQ.nEaSxm520v7TpKAy2GG_kA';
@@ -79,36 +128,42 @@ const PointMap = () => {
           {
             id: 'churches',
             source: 'churches',
-            color: '#EBCB8B'
+            color: '#EBCB8B',
+            visibility: true
           },
           {
             id: 'hospitals',
             source: 'hospitals',
+            visibility: true,
             color: '#BF616A'
           },
           {
             id: 'libraries',
             source: 'libraries',
+            visibility: true,
             color: '#88C0D0'
           },
           {
             id: 'pharmacies',
             source: 'pharmacies',
+            visibility: true,
             color: '#B48EAD'
           },
           {
             id: 'schools',
             source: 'schools',
+            visibility: true,
             color: '#D08770'
           },
           {
             id: 'grocery',
             source: 'grocery',
+            visibility: true,
             color: '#A3BE8C'
           }
         ];
       
-        pointLayers.forEach(layer => {
+        pointLayers.forEach((layer,index) => {
           map.addSource(layer.id, {
             type: 'geojson',
             data: `https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_GeoData_Points/Seattle_${layer.id}_centroids.geojson`
@@ -123,11 +178,12 @@ const PointMap = () => {
               'circle-color': layer.color
             }
           });
+
+          map.moveLayer(layer.id, pointLayers[index - 1]?.id);
         });
       
         setLayers(pointLayers);
-      });
-      
+      },[map]);
 
       map.on('idle', () => {
         // ... handle idle
@@ -146,14 +202,25 @@ const PointMap = () => {
     } else {
       map.setLayoutProperty(id, 'visibility', 'visible');
     }
-  };
+  
+    setLayers(layers => layers.map(layer => {
+      if (layer.id === id) {
+        return { ...layer, visibility: visibility !== 'visible' };
+      }
+      return layer;
+    }));
+
+  
 
   return (
-    <div className="map-container">
-      <Sidebar layers={layers} toggleVisibility={handleIconClick} />
-      <div ref={mapContainer}></div>
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div className="map-container">
+        <Sidebar layers={layers} mapInstance={map} toggleVisibility={handleIconClick} moveLayer={moveLayer} />
+        <div ref={mapContainer}></div>
+        </div>
+    </DndProvider>
   );
 };
 
+  };
 export default PointMap;

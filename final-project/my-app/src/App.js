@@ -1,12 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
-import PointMap from './PointMap';
+import PlotMap from './PlotMap';
+
 
 function App() {
   return (
     <div className="App">
       {/* <header className="App-header"> */}
-      <PointMap />
+      <PlotMap />
       {/* </header> */}
     </div>
   );
