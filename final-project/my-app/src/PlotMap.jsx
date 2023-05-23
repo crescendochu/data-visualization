@@ -115,6 +115,30 @@ const PlotMap = () => {
 
   const defaultAccessShedRadius = 500; // Define a default radius for the access shed layer
 
+// const handleIconClick = (id) => {
+//   const visibility = map.getLayoutProperty(id, 'visibility');
+//   const newVisibility = visibility === 'visible' ? 'none' : 'visible';
+  
+//   map.setLayoutProperty(id, 'visibility', newVisibility);
+
+//   const shedLayerId = 'access-shed-layer-' + id;
+
+//   if (!map.getLayer(shedLayerId)) {
+//     const layer = layers.find(l => l.id === id);
+//     handleAccessShedChange(id, defaultAccessShedRadius, layer.color);
+//   }
+//   else {
+//     map.setLayoutProperty(shedLayerId, 'visibility', newVisibility);
+//   }
+
+//   setLayers(layers => layers.map(layer => {
+//     if (layer.id === id) {
+//       return { ...layer, visibility: newVisibility === 'visible' };
+//     }
+//     return layer;
+//   }));
+// };
+
 const handleIconClick = (id) => {
   const visibility = map.getLayoutProperty(id, 'visibility');
   const newVisibility = visibility === 'visible' ? 'none' : 'visible';
@@ -123,17 +147,13 @@ const handleIconClick = (id) => {
 
   const shedLayerId = 'access-shed-layer-' + id;
 
-  if (!map.getLayer(shedLayerId)) {
-    const layer = layers.find(l => l.id === id);
-    handleAccessShedChange(id, defaultAccessShedRadius, layer.color);
-  }
-  else {
+  if (map.getLayer(shedLayerId)) {
     map.setLayoutProperty(shedLayerId, 'visibility', newVisibility);
   }
 
   setLayers(layers => layers.map(layer => {
     if (layer.id === id) {
-      return { ...layer, visibility: newVisibility !== 'visible' };
+      return { ...layer, visibility: newVisibility === 'visible' };
     }
     return layer;
   }));
