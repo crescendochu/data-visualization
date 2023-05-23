@@ -1,3 +1,4 @@
+// Sidebar.jsx
 import React from 'react';
 import LayerControl from './LayerControl';
 import Accordion from '@mui/material/Accordion';
@@ -5,7 +6,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const Sidebar = ({ layers, toggleVisibility,handleAccessShedChange,applySeverityFilter }) => {
+const Sidebar = ({ layers, mapInstance, toggleVisibility,handleAccessShedChange,handleSeverityRangeChange}) => {
   // Separate the layers into 'City Data' and 'Sidewalk Features'
   const cityDataLayers = layers.filter(layer => layer.id !== 'no-curb-ramp');
   const sidewalkFeaturesLayers = layers.filter(layer => layer.id === 'no-curb-ramp');
@@ -25,10 +26,11 @@ const Sidebar = ({ layers, toggleVisibility,handleAccessShedChange,applySeverity
             <LayerControl
               key={layer.id}
               layer={layer}
+              mapInstance={mapInstance} // pass map here
               isVisible={layer.visibility}
               toggleVisibility={toggleVisibility}
               handleAccessShedChange={handleAccessShedChange}
-              applySeverityFilter={applySeverityFilter}
+              handleSeverityRangeChange={handleSeverityRangeChange}
             />
           ))}
         </AccordionDetails>
@@ -46,10 +48,11 @@ const Sidebar = ({ layers, toggleVisibility,handleAccessShedChange,applySeverity
             <LayerControl
               key={layer.id}
               layer={layer}
+              mapInstance={mapInstance}  // pass map here
               isVisible={layer.visibility}
               toggleVisibility={toggleVisibility}
               handleAccessShedChange={handleAccessShedChange}
-              applySeverityFilter={applySeverityFilter}
+              handleSeverityRangeChange={handleSeverityRangeChange}
             />
           ))}
         </AccordionDetails>

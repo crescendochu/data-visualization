@@ -1,16 +1,14 @@
 // LaterControl.jsx
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, EyeSlash } from "@phosphor-icons/react";
-import SettingsIcon from '@mui/icons-material/Settings';
-import FilterIcon from '@mui/icons-material/FilterList';
+import { Plus, ChartPolar, Eye, EyeSlash,Faders,Funnel } from "@phosphor-icons/react";
 import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-const LayerControl = ({ layer, isVisible, toggleVisibility, handleAccessShedChange }) => {
-  const mapInstance = useRef(null);
+const LayerControl = ({ layer, mapInstance, isVisible, toggleVisibility, handleAccessShedChange }) => {
+  // const mapInstance = useRef(null);
   const [map, setMap] = useState(null);
   const [severityRange, setSeverityRange] = useState([0, 5]); 
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -19,6 +17,14 @@ const LayerControl = ({ layer, isVisible, toggleVisibility, handleAccessShedChan
   const [showFilterBar, setShowFilterBar] = useState(false);
   const [filterProperties, setFilterProperties] = useState([]);
   const [filterInput, setFilterInput] = useState('');
+
+  useEffect(() => {
+    if (mapInstance) {
+      setMap(mapInstance);
+    }
+  }, [mapInstance]);
+
+
   const applySeverityFilter = (severityRange) => {
     if (map) {
       map.setFilter('no-curb-ramp', ['all', ['>=', 'severity', severityRange[0]], ['<=', 'severity', severityRange[1]]]);
@@ -75,13 +81,25 @@ const fetchDataProperties = async (url, layerId) => {
     handleAccessShedChange(layer.id, newValue);
   };
 
+  const handleSeveritySliderChange = (event, newValue) => {
+    console.log("Severity slider changed with new value: ", newValue);
+    setSeverityRange(newValue);
+    applySeverityFilter(newValue);
+};
+
   const handleAddFilter = () => setShowFilterBar(true);
 
   const handleFilterChange = (event, newValue) => setFilterInput(newValue);
 
+  const handleSeverityFilterChange = (event, newValue) => {
+    console.log('Severity filter changed with new value: ', newValue);
+    setSeverityRange(newValue);
+    applySeverityFilter(newValue);  // Apply the filter whenever the slider changes
+  };
+
 
   return (
-    <div className="map-layers" style={{ height: settingsOpen ? '120px' : 'auto' }}>
+    <div className="map-layers" style={{ height: settingsOpen ? 'fit-content' : 'auto' }}>
       <div className="draggable-layer">
         <div className="layer-name-container">
           <div
@@ -96,14 +114,19 @@ const fetchDataProperties = async (url, layerId) => {
           ) : (
             <EyeSlash weight="bold" onClick={handleToggleVisibility} />
           )}
-          <SettingsIcon onClick={handleSettingsClick} />
+          <Faders weight="bold" onClick={handleSettingsClick} />
         </div>
       </div>
       {settingsOpen && (
         <div className="settings-container">
-          <Button onClick={handleAddFilter}>Add Filter</Button>
-          <Button onClick={handleAddAccessShed}>Add Access Shed</Button>
+          <div className="settings-buttons">
+          <Button onClick={handleAddFilter}>  <Plus size={22} weight="bold" />  Filter</Button>
+          <Button onClick={handleAddAccessShed}> <Plus size={22} weight="bold" /> Access Shed</Button>
+          </div>
           {addAccessShed && (
+            <div className="slider-with-icon">
+              <ChartPolar size={32} weight="bold" className='icon'/>
+              <div className="slider">
             <Slider
               value={accessShedRange}
               onChange={handleSliderChange}
@@ -119,23 +142,27 @@ const fetchDataProperties = async (url, layerId) => {
                 {value: 2000, label: '2000m'},
               ]}
             />
+            </div>
+            </div>
           )}
           {showFilterBar && (
+            <div className="filter-and-slider">
             <div className="filter-bar">
-              <FilterIcon />
+              <Funnel size={32} weight="bold" className='icon'/>
+              <div className="filter-input">
               <Autocomplete
                 options={filterProperties}
                 value={filterInput}
                 onChange={handleFilterChange}
                 renderInput={(params) => <TextField {...params} label="Filter" variant="outlined" />}
               />
+              </div>
+            </div>
               {filterInput === 'severity' && (
+            <div className="slider">
                 <Slider
                 value={severityRange}
-                onChange={(event, newValue) => {
-                    setSeverityRange(newValue);
-                    applySeverityFilter(newValue);  // Call the prop function here
-                }}
+                onChange={handleSeverityFilterChange}
                 valueLabelDisplay="auto"
                 min={0}
                 max={5}
@@ -147,12 +174,12 @@ const fetchDataProperties = async (url, layerId) => {
                     { value: 3, label: '3' },
                     { value: 4, label: '4' },
                     { value: 5, label: '5' },
-                ]}
+    ]}
             />
+            </div>
             
                 )}
-
-            </div>
+          </div>
           )}
         </div>
       )}

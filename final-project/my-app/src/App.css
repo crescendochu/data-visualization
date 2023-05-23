@@ -76,18 +76,14 @@
   border-radius: 8px; 
   left: 20px;
   top: 20px;
-  height: 36px;
+  height: 48px;
 }
 
-.icon-container i {
-  display: inline-block;
-  font-size:24px;
-}
 
 .color-strip {
   height: 100%;
-  width: 5px;
-  margin-right: 5px;
+  width: 8px;
+  margin-right: 12px;
   float: left;
   border-radius: 8px 0px 0px 8px;
 }
@@ -118,12 +114,13 @@
 
 
 .map-layers {
-  height: auto;
+  height: fit-content;
   transition: height 0.3s ease;
 }
 
 .map-layers.expanded {
   height: 120px;
+  background-color:yellow;
 }
 
 .settings-container {
@@ -134,4 +131,54 @@
   padding: 10px;
   display: flex;
   justify-content: space-around;
+  flex-direction: column;
+  height:fit-content;
+  gap: 24px;
+}
+
+.settings-buttons{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.slider-with-icon{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  gap: 24px;
+  align-items: top;
+}
+
+.filter-bar{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+}
+
+.filter-and-slider{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: top;
+  gap: 24px;
+
+}
+
+.filter-input{
+  /* width to fill maximum */
+  width: 100%;
+}
+
+.slider{
+  padding: 0px 24px 0px 0px;
+  width: 100%;
+}
+
+.icon{
+  width: 24px;
+  height: 24px;
+  color:#2E3440;
 }
