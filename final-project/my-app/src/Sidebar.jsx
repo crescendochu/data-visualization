@@ -5,7 +5,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const Sidebar = ({ layers, toggleVisibility,handleAccessShedChange }) => {
+const Sidebar = ({ layers, toggleVisibility,handleAccessShedChange,applySeverityFilter }) => {
   // Separate the layers into 'City Data' and 'Sidewalk Features'
   const cityDataLayers = layers.filter(layer => layer.id !== 'no-curb-ramp');
   const sidewalkFeaturesLayers = layers.filter(layer => layer.id === 'no-curb-ramp');
@@ -28,6 +28,7 @@ const Sidebar = ({ layers, toggleVisibility,handleAccessShedChange }) => {
               isVisible={layer.visibility}
               toggleVisibility={toggleVisibility}
               handleAccessShedChange={handleAccessShedChange}
+              applySeverityFilter={applySeverityFilter}
             />
           ))}
         </AccordionDetails>
@@ -48,6 +49,7 @@ const Sidebar = ({ layers, toggleVisibility,handleAccessShedChange }) => {
               isVisible={layer.visibility}
               toggleVisibility={toggleVisibility}
               handleAccessShedChange={handleAccessShedChange}
+              applySeverityFilter={applySeverityFilter}
             />
           ))}
         </AccordionDetails>

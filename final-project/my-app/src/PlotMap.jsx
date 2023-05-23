@@ -1,3 +1,4 @@
+// PlotMap.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import useMapbox from './useMapbox';
@@ -8,6 +9,31 @@ const PlotMap = () => {
   const [layers, setLayers] = useState([]);
   const map = useMapbox(mapContainer);
   const [accessShedRange, setAccessShedRange] = useState(0);
+
+
+  // useEffect(() => {
+  //   if (map) {
+  //     fetch('https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_0.geojson')
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         // check the first feature for severity property
+  //         if (data.features.length > 0 && 'severity' in data.features[0].properties) {
+  //           console.log(`Severity is of type ${typeof data.features[0].properties.severity}`);
+  //           // print unique values of severity
+  //           const severityValues = data.features.map(feature => feature.properties.severity);
+  //           console.log('Unique severity values:', [...new Set(severityValues)]);
+  //         }
+  //         // add the source to the map
+  //         map.addSource('no-curb-ramp', {
+  //           type: 'geojson',
+  //           data: data
+  //         });
+  
+  //         // The rest of your code here...
+  //       });
+  //   }
+  // }, [map]);
+
 
   useEffect(() => {
     if (map) {
@@ -95,7 +121,7 @@ const PlotMap = () => {
     }
   }, [map]);
 
- 
+
   
   const translateToPixels = (distanceInMeters) => {
     const center = map.getCenter();
@@ -160,6 +186,9 @@ const handleAccessShedChange = (id, radius, color) => {
   handleSliderChange(null, radius, id, color);
 };
 
+const applySeverityFilter = (severityRange) => {
+  map.setFilter('no-curb-ramp', ['all', ['>=', 'severity', severityRange[0]], ['<=', 'severity', severityRange[1]]]);
+};
 
   return (
     <div className="map-container">
@@ -168,6 +197,7 @@ const handleAccessShedChange = (id, radius, color) => {
       mapInstance={map} 
       toggleVisibility={handleIconClick}
       handleAccessShedChange={handleAccessShedChange}
+      applySeverityFilter={applySeverityFilter} 
       />
       <div ref={mapContainer}></div>
     </div>
