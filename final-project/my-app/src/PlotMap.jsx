@@ -15,20 +15,66 @@ const PlotMap = () => {
 
   useEffect(() => {
     if (map) {
-      map.addSource('no-curb-ramp', {
-        type: 'geojson',
-        data: 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_0_new.geojson'
-      });
+      // map.addSource('no-curb-ramp', {
+      //   type: 'geojson',
+      //   data: 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_0_new.geojson'
+      // });
     
-      map.addLayer({
-        id: 'no-curb-ramp',
-        type: 'circle',
-        source: 'no-curb-ramp',
-        paint: {
-          'circle-radius': 2,
-          'circle-color': '#E679B6'
+      // map.addLayer({
+      //   id: 'no-curb-ramp',
+      //   type: 'circle',
+      //   source: 'no-curb-ramp',
+      //   paint: {
+      //     'circle-radius': 2,
+      //     'circle-color': '#E679B6'
+      //   }
+      // });
+
+      const updateDataLayer = () => {
+        const zoomLevel = map.getZoom();
+        let geojsonFileUrl;
+        if (zoomLevel < 12) {
+          geojsonFileUrl = 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_0.geojson';
+        } else if (zoomLevel < 13) {
+          geojsonFileUrl = 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_1.geojson';
+        } else if (zoomLevel < 14) {
+          geojsonFileUrl = 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_2.geojson';
+        } else if (zoomLevel < 15) {
+          geojsonFileUrl = 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_3.geojson';
+        } else if (zoomLevel < 16) {
+          geojsonFileUrl = 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_4.geojson';
+        } else {
+          geojsonFileUrl = 'https://raw.githubusercontent.com/crescendochu/data-visualization/main/data/Seattle_labels_withZoominLevel/filtered_NoCurbs_zoomin_0.geojson';
         }
-      });
+
+        // Remove the existing 'no-curb-ramp' layer if it already exists
+        if (map.getLayer('no-curb-ramp')) {
+          map.removeLayer('no-curb-ramp');
+        }
+
+        // Remove the existing 'no-curb-ramp' source if it already exists
+        if (map.getSource('no-curb-ramp')) {
+          map.removeSource('no-curb-ramp');
+        }
+
+        map.addSource('no-curb-ramp', {
+          type: 'geojson',
+          data: geojsonFileUrl
+        });
+      
+        map.addLayer({
+          id: 'no-curb-ramp',
+          type: 'circle',
+          source: 'no-curb-ramp',
+          paint: {
+            'circle-radius': 2,
+            'circle-color': '#E679B6'
+          }
+        });
+      };
+
+      map.on('zoom', updateDataLayer);
+      updateDataLayer();
 
       const sidewalkLayers = [
         {
